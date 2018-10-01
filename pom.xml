@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>interactiveMedia</groupId>
+	<artifactId>computerVision</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>cv2018</name>
+	<description>code for 2018 cv course assignments</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
+
+	<!-- from README @ https://github.com/imagingbook/imagingbook-common -->
+	<repositories>
+		<repository>
+			<id>imagingbook-maven-repository</id>
+			<url>https://raw.github.com/imagingbook/imagingbook-maven-repository/master</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.imagingbook</groupId>
+			<artifactId>imagingbook-common</artifactId>
+			<version>1.5</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/net.imagej/ij -->
+		<dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>ij</artifactId>
+			<version>1.52g</version>
+		</dependency>
+	</dependencies>
+
+</project>
