@@ -29,7 +29,56 @@ public class LocalMinMaxDetector {
 
 	private static final float NOT_A_LOCAL_EXTREME = -13;
 
-	public List<Pixel> bestMatches(int n, List<Pixel> localExtremes) {
+	/**
+	 * get the average for a 3x3 kernel:
+	 * 
+	 * <pre>
+	 * xxx
+	 * xix
+	 * xxx
+	 * </pre>
+	 * 
+	 * ignores the border pixels
+	 */
+	public List<Pixel> findLocalMinima(FloatProcessor matchScore) {
+		List<Pixel> localAverages = new ArrayList<>();
+		for (int x = 1; x < matchScore.getWidth() - 1; x++) {
+			for (int y = 1; y < matchScore.getHeight() - 1; y++) {
+				float pixelValue = checkForLocalMinimum(x, y, matchScore);
+				if (pixelValue != NOT_A_LOCAL_EXTREME) {
+					localAverages.add(new Pixel(x, y, pixelValue));
+				}
+			}
+		}
+		return localAverages;
+	}
+
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param matchScore
+	 * @return -1 if [x,y] is NOT a local average
+	 */
+	private float checkForLocalMinimum(int x, int y, FloatProcessor matchScore) {
+		float value = matchScore.getPixelValue(x, y);
+		for (int xKernel = -1; xKernel < 2; xKernel++) {
+			for (int yKernel = -1; yKernel < 2; yKernel++) {
+				if (!(xKernel == 0 && yKernel == 0)) {
+					if (matchScore.getPixelValue(x + xKernel, y + yKernel) <= value) {
+						return NOT_A_LOCAL_EXTREME;
+					}
+				}
+			}
+		}
+		return value;
+	}
+
+	public List<Pixel> findLocalMinima(FloatProcessor matchScore, int n) {
+		return bestMatches(n, findLocalMinima(matchScore));
+	}
+
+	private List<Pixel> bestMatches(int n, List<Pixel> localExtremes) {
 
 		if (n >= localExtremes.size()) {
 			return localExtremes;
@@ -49,50 +98,5 @@ public class LocalMinMaxDetector {
 		});
 		// TODO: reverse list when looking for maxima !!
 		return localExtremes.subList(0, n);
-	}
-
-	/**
-	 * get the average for a 3x3 kernel:
-	 * 
-	 * <pre>
-	 * xxx
-	 * xix
-	 * xxx
-	 * </pre>
-	 * 
-	 * ignores the border pixels
-	 */
-	public List<Pixel> findLocalMinima(FloatProcessor fp) {
-		List<Pixel> localAverages = new ArrayList<>();
-		for (int x = 1; x < fp.getWidth() - 1; x++) {
-			for (int y = 1; y < fp.getHeight() - 1; y++) {
-				float pixelValue = checkForLocalMinimum(x, y, fp);
-				if (pixelValue != NOT_A_LOCAL_EXTREME) {
-					localAverages.add(new Pixel(x, y, pixelValue));
-				}
-			}
-		}
-		return localAverages;
-	}
-
-	/**
-	 * 
-	 * @param x
-	 * @param y
-	 * @param fp
-	 * @return -1 if [x,y] is NOT a local average
-	 */
-	private float checkForLocalMinimum(int x, int y, FloatProcessor fp) {
-		float value = fp.getPixelValue(x, y);
-		for (int xKernel = -1; xKernel < 2; xKernel++) {
-			for (int yKernel = -1; yKernel < 2; yKernel++) {
-				if (!(xKernel == 0 && yKernel == 0)) {
-					if (fp.getPixelValue(x + xKernel, y + yKernel) <= value) {
-						return NOT_A_LOCAL_EXTREME;
-					}
-				}
-			}
-		}
-		return value;
 	}
 }
