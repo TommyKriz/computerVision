@@ -12,13 +12,14 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.plugin.filter.PlugInFilter;
+import ij.process.Blitter;
+import ij.process.ByteProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
+import imagingbook.lib.interpolation.InterpolationMethod;
 import imagingbook.pub.geometry.mappings.linear.ProjectiveMapping;
 import imagingbook.pub.sift.SiftMatch;
 
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Solution implements PlugInFilter {
@@ -44,22 +45,39 @@ public class Solution implements PlugInFilter {
 		SiftMatchingVisualization viz = new SiftMatchingVisualization();
 		viz.showMontage(image1, image2, matches);
 
-	}
-	
-	private ProjectiveMapping calcProjection(List<SiftMatch> matches) {
-		ArrayList<Point2D> featureCoordinatesInImage1 = new ArrayList<>();
-		ArrayList<Point2D> featureCoordinatesInImage2 = new ArrayList<>();
+		ProjectiveMapping mapping = SiftMatching.calcProjection(matches);
 
-		for (SiftMatch m : matches) {
-			featureCoordinatesInImage1.add(new Point2D.Double(m
-					.getDescriptor1().getX(), m.getDescriptor1().getY()));
-			featureCoordinatesInImage2.add(new Point2D.Double(m
-					.getDescriptor2().getX(), m.getDescriptor2().getY()));
-		}
+		new ImagePlus("stitched together from Sift Matching",
+				stitchTogetherImage(image1, image2, mapping)).show();
 
-		return new ProjectiveMapping(
-				featureCoordinatesInImage2.toArray(new Point2D[0]),
-				featureCoordinatesInImage1.toArray(new Point2D[0]), true);
 	}
 
+	private ImageProcessor stitchTogetherImage(FloatProcessor image1,
+			FloatProcessor image2, ProjectiveMapping mapping) {
+
+		// ImageProcessor ip = new ByteProcessor(image1.getWidth() * 2,
+		// image2.getHeight());
+		//
+		// ip.insert(image1, 0, 0);
+
+		double[] outerMostPoint = mapping.applyTo(new double[] {
+				image2.getWidth(), image2.getHeight() });
+
+		IJ.log("Outermost Point: " + outerMostPoint[0] + "-"
+				+ outerMostPoint[1]);
+
+		ImageProcessor ip = new ByteProcessor(
+				(int) Math.ceil(outerMostPoint[0]),
+				(int) Math.ceil(outerMostPoint[1]));
+
+		int cy = ip.getHeight() - image1.getHeight();
+
+		ip.insert(image1, 0, cy);
+
+		mapping.applyTo(image2, InterpolationMethod.Bicubic);
+
+		ip.copyBits(image2, 0, cy, Blitter.AVERAGE);
+
+		return ip;
+	}
 }
