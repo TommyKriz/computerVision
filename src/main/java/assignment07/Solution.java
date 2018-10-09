@@ -3,6 +3,7 @@ package assignment07;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
+import ij.process.ColorProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 
@@ -14,7 +15,7 @@ public class Solution implements PlugInFilter {
 
 	public int setup(String arg, ImagePlus imp) {
 		this.imp = imp;
-		return DOES_8G + NO_CHANGES;
+		return DOES_8G + NO_CHANGES + ROI_REQUIRED;
 	}
 
 	public void run(ImageProcessor ip) {
@@ -31,13 +32,20 @@ public class Solution implements PlugInFilter {
 
 		new ImagePlus("matchScore", matchScore).show();
 
-		LocalMinMaxDetector ll = new LocalMinMaxDetector(matchScore);
+		LocalMinMaxDetector ll = new LocalMinMaxDetector();
+		List<Pixel> allLocalMinima = ll.findLocalMinima(matchScore);
 
-//		List<Pixel> localMinima = ll.localMins(4);
-//
-//		for (Pixel p : localMinima) {
-//			IJ.log(p.toString());
-//		}
+		// optional auch drawen
+
+		int[] pink = new int[] { 255, 105, 180 };
+
+		ColorProcessor cp = target.convertToColorProcessor();
+		for (Pixel p : ll.bestMatches(20, allLocalMinima)) {
+			IJ.log(" -> " + p.toString());
+			cp.putPixel(p.x, p.y, pink);
+		}
+
+		new ImagePlus("detected", cp).show();
 
 	}
 }

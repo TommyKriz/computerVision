@@ -18,21 +18,24 @@ class Pixel {
 		this.data = data;
 	}
 
+	@Override
+	public String toString() {
+		return " x: " + x + " y: " + y + " data: " + data;
+	}
+
 }
 
 public class LocalMinMaxDetector {
 
-	private FloatProcessor ip;
+	private static final float NOT_A_LOCAL_EXTREME = -13;
 
-	private List<Pixel> localAverages;
+	public List<Pixel> bestMatches(int n, List<Pixel> localExtremes) {
 
-	public LocalMinMaxDetector(FloatProcessor ip) {
-		this.ip = ip;
-		localAverages = calcLocalAverages();
-	}
+		if (n >= localExtremes.size()) {
+			return localExtremes;
+		}
 
-	public List<Pixel> localMins(int n) {
-		Collections.sort(localAverages, new Comparator<Pixel>() {
+		Collections.sort(localExtremes, new Comparator<Pixel>() {
 			@Override
 			public int compare(Pixel p1, Pixel p2) {
 				if (p1.data < p2.data) {
@@ -44,8 +47,8 @@ public class LocalMinMaxDetector {
 				}
 			}
 		});
-
-		return localAverages.subList(0, n);
+		// TODO: reverse list when looking for maxima !!
+		return localExtremes.subList(0, n);
 	}
 
 	/**
@@ -59,25 +62,37 @@ public class LocalMinMaxDetector {
 	 * 
 	 * ignores the border pixels
 	 */
-	private List<Pixel> calcLocalAverages() {
+	public List<Pixel> findLocalMinima(FloatProcessor fp) {
 		List<Pixel> localAverages = new ArrayList<>();
-
-		for (int x = 1; x < ip.getWidth() - 1; x++) {
-			for (int y = 1; y < ip.getHeight() - 1; y++) {
-				localAverages.add(new Pixel(x, y, calcLocalAverage(x, y)));
+		for (int x = 1; x < fp.getWidth() - 1; x++) {
+			for (int y = 1; y < fp.getHeight() - 1; y++) {
+				float pixelValue = checkForLocalMinimum(x, y, fp);
+				if (pixelValue != NOT_A_LOCAL_EXTREME) {
+					localAverages.add(new Pixel(x, y, pixelValue));
+				}
 			}
 		}
-
 		return localAverages;
 	}
 
-	private float calcLocalAverage(int x, int y) {
-		float avg = 0f;
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param fp
+	 * @return -1 if [x,y] is NOT a local average
+	 */
+	private float checkForLocalMinimum(int x, int y, FloatProcessor fp) {
+		float value = fp.getPixelValue(x, y);
 		for (int xKernel = -1; xKernel < 2; xKernel++) {
 			for (int yKernel = -1; yKernel < 2; yKernel++) {
-				avg += ip.getPixelValue(x + xKernel, x + yKernel);
+				if (!(xKernel == 0 && yKernel == 0)) {
+					if (fp.getPixelValue(x + xKernel, y + yKernel) <= value) {
+						return NOT_A_LOCAL_EXTREME;
+					}
+				}
 			}
 		}
-		return avg / 9f;
+		return value;
 	}
 }
