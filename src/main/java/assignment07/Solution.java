@@ -4,12 +4,14 @@ import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.Overlay;
 import ij.gui.ShapeRoi;
+import ij.gui.TextRoi;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ColorProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.geom.Path2D;
 import java.util.List;
 
@@ -40,12 +42,14 @@ public class Solution implements PlugInFilter {
 				.findLocalMinima(matchScore, 20);
 
 		visualizeResult(bestLocalMinima, target.convertToColorProcessor(),
-				reference.getWidth(), reference.getHeight());
+				ip.getRoi().width, ip.getRoi().height, Color.YELLOW);
 
 	}
 
+	private Font LabelFont = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
+
 	private void visualizeResult(List<Pixel> localMinima, ColorProcessor cp,
-			int referenceWidth, int referenceHeight) {
+			int referenceWidth, int referenceHeight, Color color) {
 
 		final int[] pink = new int[] { 255, 105, 180 };
 
@@ -53,18 +57,28 @@ public class Solution implements PlugInFilter {
 
 		Overlay oly = new Overlay();
 
+		final int xo = 4, yo = 2;
+
+		int matchNumber = 0;
+
 		for (Pixel p : localMinima) {
+
+			matchNumber++;
 
 			IJ.log(" -> " + p.toString());
 
-			oly.add(makeStraightLine(p.x, p.y, p.x + referenceWidth, p.y,
-					Color.YELLOW));
+			TextRoi text = new TextRoi(p.x + xo, p.y + yo, "match#"
+					+ matchNumber, LabelFont);
+			text.setStrokeColor(color);
+			oly.add(text);
+
+			oly.add(makeStraightLine(p.x, p.y, p.x + referenceWidth, p.y, color));
 			oly.add(makeStraightLine(p.x, p.y, p.x, p.y + referenceHeight,
-					Color.YELLOW));
+					color));
 			oly.add(makeStraightLine(p.x, p.y + referenceHeight, p.x
-					+ referenceWidth, p.y + referenceHeight, Color.YELLOW));
+					+ referenceWidth, p.y + referenceHeight, color));
 			oly.add(makeStraightLine(p.x + referenceWidth, p.y, p.x
-					+ referenceWidth, p.y + referenceHeight, Color.YELLOW));
+					+ referenceWidth, p.y + referenceHeight, color));
 
 		}
 
