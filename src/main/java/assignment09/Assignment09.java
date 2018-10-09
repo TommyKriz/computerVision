@@ -22,7 +22,7 @@ import imagingbook.pub.sift.SiftMatch;
 
 import java.util.List;
 
-public class Solution implements PlugInFilter {
+public class Assignment09 implements PlugInFilter {
 	ImagePlus imp = null;
 
 	public int setup(String arg0, ImagePlus imp) {
