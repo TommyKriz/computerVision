@@ -2,9 +2,8 @@ package assignment07;
 
 import ij.IJ;
 import ij.process.FloatProcessor;
-import ij.process.ImageProcessor;
 
-public class TemplateMatcher {
+public class ScoreFunctionMatcher {
 
 	private float[][] referenceImage;
 	private float[][] searchImage;
@@ -15,7 +14,7 @@ public class TemplateMatcher {
 	private int searchRangeX;
 	private int searchRangeY;
 
-	public TemplateMatcher(final FloatProcessor referenceImage,
+	public ScoreFunctionMatcher(final FloatProcessor referenceImage,
 			final FloatProcessor searchImage) {
 		this.referenceImage = referenceImage.getFloatArray();
 		this.searchImage = searchImage.getFloatArray();
@@ -27,6 +26,7 @@ public class TemplateMatcher {
 		searchRangeY = searchImage.getHeight() - referenceImageHeight;
 	}
 
+	// TODO: use different score functions
 	public FloatProcessor calcMatchScore() {
 		FloatProcessor matchScore = new FloatProcessor(searchRangeX,
 				searchRangeY);
