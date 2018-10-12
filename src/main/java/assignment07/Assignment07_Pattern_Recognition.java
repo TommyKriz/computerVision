@@ -63,8 +63,6 @@ public class Assignment07_Pattern_Recognition implements PlugInFilter {
 	private void visualizeResult(List<Pixel> localMinima, ColorProcessor cp,
 			int referenceWidth, int referenceHeight, Color color) {
 
-		final int[] pink = new int[] { 255, 105, 180 };
-
 		ImagePlus detected = new ImagePlus("detected", cp);
 
 		Overlay oly = new Overlay();
