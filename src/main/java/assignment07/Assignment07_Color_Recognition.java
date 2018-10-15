@@ -16,7 +16,7 @@ import java.awt.Font;
 import java.awt.geom.Path2D;
 import java.util.List;
 
-public class Assignment07_Pattern_Recognition implements PlugInFilter {
+public class Assignment07_Color_Recognition implements PlugInFilter {
 
 	private ImagePlus imp;
 
