@@ -2,6 +2,7 @@ package assignment06;
 
 import ij.IJ;
 import ij.ImagePlus;
+import ij.ImageStack;
 import ij.process.ColorProcessor;
 
 import java.awt.Point;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class K_Means_Clustering {
+public class K_Means_Clustering_Stack {
 
 	List<Cluster> clusters = new ArrayList<>();
 
@@ -19,7 +20,7 @@ public class K_Means_Clustering {
 
 	private float[][][] featureVector;
 
-	public K_Means_Clustering(float[][][] featureVector, int k) {
+	public K_Means_Clustering_Stack(float[][][] featureVector, int k) {
 		this.k = k;
 		this.featureVector = featureVector;
 		initClustersRandom(featureVector.length, featureVector[0].length);
@@ -39,27 +40,38 @@ public class K_Means_Clustering {
 
 	public void start(ColorProcessor cp) {
 
-		ImagePlus animatedKMeansClustering = new ImagePlus(
-				"K Means Clustering", cp);
+		// ImagePlus animatedKMeansClustering = new ImagePlus(
+		// "K Means Clustering", cp);
+		//
+		// animatedKMeansClustering.show();
 
+		ImageStack stack = new ImageStack(cp.getWidth(), cp.getHeight());
+
+		stack.addSlice(cp);
+
+		ImagePlus animatedKMeansClustering = new ImagePlus(
+				"K Means Clustering", stack);
 		animatedKMeansClustering.show();
+
+		double bestResult = Double.MAX_VALUE;
 
 		for (int i = 0; i < MAX_ITERATIONS; i++) {
 
-			assignFeaturePointsToClusterCenter();
+			double oldError = Double.MAX_VALUE;
+			double error = 0;
+			while (error < oldError) {
+				assignFeaturePointsToClusterCenter();
+				recalculateClusterCenters();
+				error = calculateTotalIntraClusterScatter();
+				oldError = error;
+			}
 
-			recalculateClusterCenters();
+			if (error < bestResult) {
+				stack.addSlice(drawClusters(cp.convertToColorProcessor()));
+			}
 
-			drawClusters(cp);
-
-			double totalIntraClusterScatter = calculateTotalIntraClusterScatter();
-
-			IJ.log("Iteration #" + i + "   Intra-Cluster Scatter: "
-					+ totalIntraClusterScatter);
-
-			animatedKMeansClustering.updateAndDraw();
-
-			IJ.wait(500);
+			// IJ.log("Iteration #" + i + "   Intra-Cluster Scatter: "
+			// + totalIntraClusterScatter);
 
 			initClustersRandom(featureVector.length, featureVector[0].length);
 		}
@@ -97,13 +109,14 @@ public class K_Means_Clustering {
 		}
 	}
 
-	private void drawClusters(ColorProcessor cp) {
+	private ColorProcessor drawClusters(ColorProcessor cp) {
 		for (Cluster c : clusters) {
 			cp.setColor(c.color);
 			for (Point p : c.population) {
 				cp.drawPixel(p.x, p.y);
 			}
 		}
+		return cp;
 	}
 
 }

@@ -7,6 +7,14 @@ public class RgChromaticity {
 
 	private int[] rgb = new int[3];
 
+	public FloatProcessor getRChromaticityValues(ImageProcessor ip) {
+		return getChromaticity(ip, 0);
+	}
+
+	public FloatProcessor getGChromaticityValues(ImageProcessor ip) {
+		return getChromaticity(ip, 1);
+	}
+
 	private FloatProcessor getChromaticity(ImageProcessor ip, int chroma) {
 		FloatProcessor rChroma = ip.convertToFloatProcessor();
 		for (int x = 0; x < rChroma.getWidth(); x++) {
@@ -33,13 +41,5 @@ public class RgChromaticity {
 		} else {
 			return rgb[chroma] / sum;
 		}
-	}
-
-	public FloatProcessor getRChromaticityValues(ImageProcessor ip) {
-		return getChromaticity(ip, 0);
-	}
-
-	public FloatProcessor getGChromaticityValues(ImageProcessor ip) {
-		return getChromaticity(ip, 1);
 	}
 }

@@ -43,7 +43,7 @@ public class Assignment06 implements PlugInFilter {
 					+ "\n");
 		}
 
-		K_Means_Clustering kMeansClustering = new K_Means_Clustering(
+		K_Means_Clustering_Stack kMeansClustering = new K_Means_Clustering_Stack(
 				featureVector, 16);
 		kMeansClustering.start(ip.convertToColorProcessor());
 
