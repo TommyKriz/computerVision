@@ -7,8 +7,6 @@ import ij.gui.TextRoi;
 import ij.process.Blitter;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
-import imagingbook.lib.interpolation.InterpolationMethod;
-import imagingbook.pub.geometry.mappings.linear.ProjectiveMapping;
 import imagingbook.pub.sift.SiftDescriptor;
 import imagingbook.pub.sift.SiftMatch;
 
@@ -16,9 +14,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Shape;
 import java.awt.geom.Path2D;
-import java.awt.geom.Point2D;
 import java.awt.geom.QuadCurve2D;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SiftMatchingVisualization {
