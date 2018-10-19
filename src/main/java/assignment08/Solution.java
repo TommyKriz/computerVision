@@ -39,6 +39,8 @@ public class Solution implements PlugInFilter {
 
 		new ImagePlus("Color Distribution",
 				ColorDistribution.distribution(allColors)).show();
+		new ImagePlus("Color Distribution",
+				ColorDistribution.distribution(referenceColors)).show();
 
 	}
 
