@@ -1,47 +1,28 @@
 package assignment08;
 
 import ij.process.FloatProcessor;
-import imagingbook.lib.math.MahalanobisDistance;
+
+import java.util.List;
 
 public class ColorDistribution {
 
-	private final double[][] sampleColors;
+	public static FloatProcessor distribution(List<int[]> colors) {
+		int[][] distributionCount = new int[256][256];
 
-	private final double[] centroid;
-
-	private final MahalanobisDistance mhd;
-
-	public ColorDistribution(double[][] sampleColors) {
-		this.sampleColors = sampleColors;
-		centroid = initCentroid();
-		mhd = new MahalanobisDistance(this.sampleColors);
-	}
-
-	private double[] initCentroid() {
-		int numberOfSamples = sampleColors.length;
-		double cx = 0;
-		double cy = 0;
-		for (int i = 0; i < numberOfSamples; i++) {
-			cx += sampleColors[i][0];
-			cy += sampleColors[i][1];
+		for (int[] rgb : colors) {
+			float r = RgChromaticity.calcRChroma(rgb);
+			float g = RgChromaticity.calcGChroma(rgb);
+			distributionCount[map0To1Value(r, 255)][map0To1Value(g, 255)]++;
 		}
-		cx /= numberOfSamples;
-		cy /= numberOfSamples;
-		return new double[] { cx, cy };
-	}
 
-	private double distanceFromCentroid() {
-		return mhd.distance(centroid);
-	}
-
-	private double distanceToPoint(double[] samplePoint) {
-		return mhd.distance(centroid, samplePoint);
-	}
-
-	public FloatProcessor distribution() {
-		FloatProcessor fp = new FloatProcessor(256, 256);
-
+		FloatProcessor fp = new FloatProcessor(distributionCount);
+		// because certain colors are counted more than 255 times
+		fp.setMinAndMax(0, 255);
 		return fp;
+	}
+
+	private static int map0To1Value(float value, int toRange) {
+		return Math.round(value * toRange);
 	}
 
 }

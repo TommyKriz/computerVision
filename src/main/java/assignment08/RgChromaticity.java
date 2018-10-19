@@ -7,6 +7,14 @@ public class RgChromaticity {
 
 	private int[] rgb = new int[3];
 
+	public static float calcRChroma(int[] color) {
+		return calcChroma(color, 0);
+	}
+
+	public static float calcGChroma(int[] color) {
+		return calcChroma(color, 1);
+	}
+
 	public FloatProcessor getRChromaticityValues(ImageProcessor ip) {
 		return getChromaticity(ip, 0);
 	}
@@ -34,7 +42,7 @@ public class RgChromaticity {
 	 *            0 for r, 1 for g
 	 * @return r || g
 	 */
-	private float calcChroma(int[] rgb, int chroma) {
+	private static float calcChroma(int[] rgb, int chroma) {
 		float sum = rgb[0] + rgb[1] + rgb[2];
 		if (sum == 0) {
 			return 0;
