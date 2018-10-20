@@ -47,6 +47,5 @@ public class Assignment09 implements PlugInFilter {
 		new ImagePlus("stitched together from Sift Matching",
 				new ImageStitching().stitchTogether(image1, image2, mapping))
 				.show();
-
 	}
 }

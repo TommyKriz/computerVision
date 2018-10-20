@@ -10,6 +10,7 @@ import imagingbook.pub.sift.SiftMatcher;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SiftMatching {
@@ -38,6 +39,8 @@ public class SiftMatching {
 		// match the second set of features:
 		List<SiftMatch> matches = sm.matchDescriptors(fsB);
 
+		Collections.sort(matches);
+
 		return matches.subList(0, NUMBER_OF_SIFT_MATCHES);
 	}
 
@@ -53,7 +56,7 @@ public class SiftMatching {
 		}
 
 		return new ProjectiveMapping(
-				featureCoordinatesInImage2.toArray(new Point2D[0]),
-				featureCoordinatesInImage1.toArray(new Point2D[0]), true);
+				featureCoordinatesInImage1.toArray(new Point2D[0]),
+				featureCoordinatesInImage2.toArray(new Point2D[0]), true);
 	}
 }
