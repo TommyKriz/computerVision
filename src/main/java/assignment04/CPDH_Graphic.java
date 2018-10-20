@@ -29,11 +29,13 @@ public class CPDH_Graphic {
 	public CPDH_Graphic(ColorProcessor cp, Contour c) {
 		Point2D centroid = calcCentroid(c);
 		initMaxRAndMainAxis(c, centroid);
-		fillHistogramAndDrawPointsPerSegment(cp, associatePolarCoordinates(c, centroid));
+		fillHistogramAndDrawPointsPerSegment(cp,
+				associatePolarCoordinates(c, centroid));
 		drawPolarGrid(cp, centroid);
 	}
 
-	private void fillHistogramAndDrawPointsPerSegment(ColorProcessor cp, List<PolarPoint> polarPoints) {
+	private void fillHistogramAndDrawPointsPerSegment(ColorProcessor cp,
+			List<PolarPoint> polarPoints) {
 
 		// helper array
 		PointAggregator[][] histogramWithPoints = new PointAggregator[NUMBER_OF_RADIAL_SEGMENTS][NUMBER_OF_ANGULAR_SEGMENTS];
@@ -62,8 +64,23 @@ public class CPDH_Graphic {
 
 	}
 
-	public int[][] getHistogram() {
-		return histogram;
+	public double[][] getNormalizedHistogram() {
+		int w = histogram.length;
+		int h = histogram[0].length;
+		double[][] normalizedHistogram = new double[w][h];
+		double totalNumberOfHistogramEntries = 0.0;
+		for (int x = 0; x < w; x++) {
+			for (int y = 0; y < h; y++) {
+				totalNumberOfHistogramEntries += histogram[x][y];
+			}
+		}
+		for (int x = 0; x < w; x++) {
+			for (int y = 0; y < h; y++) {
+				// normalization occurs here
+				normalizedHistogram[x][y] = (histogram[x][y] / totalNumberOfHistogramEntries);
+			}
+		}
+		return normalizedHistogram;
 	}
 
 	private Point2D calcCentroid(Contour contour) {
@@ -73,7 +90,8 @@ public class CPDH_Graphic {
 			sumX += p.getX();
 			sumY += p.getY();
 		}
-		return new Point2D.Double(sumX / contour.getLength(), sumY / contour.getLength());
+		return new Point2D.Double(sumX / contour.getLength(), sumY
+				/ contour.getLength());
 	}
 
 	private void initMaxRAndMainAxis(Contour outerContour, Point2D centroid) {
@@ -122,10 +140,12 @@ public class CPDH_Graphic {
 
 	}
 
-	private List<PolarPoint> associatePolarCoordinates(Contour contour, Point2D centroid) {
+	private List<PolarPoint> associatePolarCoordinates(Contour contour,
+			Point2D centroid) {
 		List<PolarPoint> result = new ArrayList<>();
 		for (Point2D p : contour) {
-			result.add(new PolarPoint(p, p.distance(centroid), angleFromXAxis(p, centroid)));
+			result.add(new PolarPoint(p, p.distance(centroid), angleFromXAxis(
+					p, centroid)));
 		}
 		return result;
 	}
@@ -135,7 +155,9 @@ public class CPDH_Graphic {
 	 */
 	private double angleFromXAxis(Point2D p, Point2D centroid) {
 		// shift the range from [-PI,PI] to [0,2*PI]
-		return Math.atan2((p.getY() - centroid.getY()), (p.getX() - centroid.getX())) + Math.PI;
+		return Math.atan2((p.getY() - centroid.getY()),
+				(p.getX() - centroid.getX()))
+				+ Math.PI;
 	};
 
 	private void drawPolarGrid(ColorProcessor cp, Point2D centroid) {
@@ -165,16 +187,20 @@ public class CPDH_Graphic {
 		}
 	}
 
-	private void drawAngularLine(double cx, double cy, double a, ColorProcessor cp) {
-		cp.drawLine((int) cx, (int) cy, (int) (cx + rMax * Math.cos(a)), (int) (cy + rMax * Math.sin(a)));
+	private void drawAngularLine(double cx, double cy, double a,
+			ColorProcessor cp) {
+		cp.drawLine((int) cx, (int) cy, (int) (cx + rMax * Math.cos(a)),
+				(int) (cy + rMax * Math.sin(a)));
 	}
 
 	private void drawRadialSegments(double cx, double cy, ColorProcessor cp) {
-		cp.drawOval((int) (cx - rMax), (int) (cy - rMax), (int) rMax * 2, (int) rMax * 2);
+		cp.drawOval((int) (cx - rMax), (int) (cy - rMax), (int) rMax * 2,
+				(int) rMax * 2);
 		double segmentRadius = rMax / NUMBER_OF_RADIAL_SEGMENTS;
 		for (int i = 1; i < NUMBER_OF_RADIAL_SEGMENTS; i++) {
 			double r = segmentRadius * i;
-			cp.drawOval((int) (cx - r), (int) (cy - r), (int) r * 2, (int) r * 2);
+			cp.drawOval((int) (cx - r), (int) (cy - r), (int) r * 2,
+					(int) r * 2);
 		}
 	}
 

@@ -57,7 +57,8 @@ public class TaskAManhattan implements PlugInFilter {
 
 	public void run(ImageProcessor ip) {
 		// create the region labeler / contour tracer:
-		RegionContourLabeling segmenter = new RegionContourLabeling((ByteProcessor) ip);
+		RegionContourLabeling segmenter = new RegionContourLabeling(
+				(ByteProcessor) ip);
 
 		// Retrieve the list of detected regions, no sorting!
 		List<BinaryRegion> regions = segmenter.getRegions(true);
@@ -81,14 +82,15 @@ public class TaskAManhattan implements PlugInFilter {
 				IJ.log("------Region irrelevant-------");
 			} else {
 				counter++;
-				double[][] h = normalizeHistogram(new CPDH_Graphic(cp, R.getOuterContour()).getHistogram(),
-						outerContourLength);
+				double[][] h = new CPDH_Graphic(cp, R.getOuterContour())
+						.getNormalizedHistogram();
 
 				// by default use Color.WHITE
 				int colorIdx = 5;
 				double errorTmp = ERROR_THRESHOLD;
 				for (int i = 0; i < 5; i++) {
-					double error = getManhattanDistance(h, referenceNormalizedHistograms.get(i));
+					double error = getManhattanDistance(h,
+							referenceNormalizedHistograms.get(i));
 					if (error < errorTmp) {
 						errorTmp = error;
 						colorIdx = i;
@@ -102,12 +104,15 @@ public class TaskAManhattan implements PlugInFilter {
 
 		visualizeFiveReferenceRegions(cp, fiveReferenceRegions);
 
-		new ImagePlus(im.getTitle() + "-associatedContourPointsWithinPolarCoordinates", cp).show();
+		new ImagePlus(im.getTitle()
+				+ "-associatedContourPointsWithinPolarCoordinates", cp).show();
 	}
 
-	private void initReferenceRegionsHistogramsAndColors(ColorProcessor cp, List<BinaryRegion> regions) {
+	private void initReferenceRegionsHistogramsAndColors(ColorProcessor cp,
+			List<BinaryRegion> regions) {
 		fiveReferenceRegions = collectFiveReferenceRegions(regions);
-		referenceNormalizedHistograms = initReferenceHistograms(cp, fiveReferenceRegions);
+		referenceNormalizedHistograms = initReferenceHistograms(cp,
+				fiveReferenceRegions);
 		referenceColors = initReferenceColors();
 	}
 
@@ -126,19 +131,22 @@ public class TaskAManhattan implements PlugInFilter {
 			List<BinaryRegion> alreadySortedFiveReferenceRegions) {
 		List<double[][]> referenceHistograms = new ArrayList<>();
 		for (BinaryRegion R : alreadySortedFiveReferenceRegions) {
-			referenceHistograms.add(normalizeHistogram(new CPDH_Graphic(cp, R.getOuterContour()).getHistogram(),
-					R.getOuterContour().getLength()));
+			referenceHistograms.add(new CPDH_Graphic(cp, R.getOuterContour())
+					.getNormalizedHistogram());
 		}
 		return referenceHistograms;
 	}
 
-	private void visualizeFiveReferenceRegions(ColorProcessor cp, List<BinaryRegion> fiveReferenceRegions) {
+	private void visualizeFiveReferenceRegions(ColorProcessor cp,
+			List<BinaryRegion> fiveReferenceRegions) {
 		for (int i = 0; i < 5; i++) {
-			visualizeRegion(cp, fiveReferenceRegions.get(i), referenceColors.get(i));
+			visualizeRegion(cp, fiveReferenceRegions.get(i),
+					referenceColors.get(i));
 		}
 	}
 
-	private List<BinaryRegion> collectFiveReferenceRegions(List<BinaryRegion> regions) {
+	private List<BinaryRegion> collectFiveReferenceRegions(
+			List<BinaryRegion> regions) {
 		List<BinaryRegion> fiveReferenceRegions = new ArrayList<>();
 		for (BinaryRegion R : regions) {
 			// discard irrelevant, too small regions
@@ -151,7 +159,8 @@ public class TaskAManhattan implements PlugInFilter {
 			@Override
 			public int compare(BinaryRegion b1, BinaryRegion b2) {
 				// sort from left to right
-				return (int) (b1.getCenterPoint().getX() - b2.getCenterPoint().getX());
+				return (int) (b1.getCenterPoint().getX() - b2.getCenterPoint()
+						.getX());
 			}
 		});
 		return fiveReferenceRegions;
@@ -163,19 +172,6 @@ public class TaskAManhattan implements PlugInFilter {
 			cp.drawPixel(p.x, p.y);
 		}
 
-	}
-
-	double[][] normalizeHistogram(int[][] histogram, int totalNumberOfHistogramEntries) {
-		int w = histogram.length;
-		int h = histogram[0].length;
-		double[][] normalizedHistogram = new double[w][h];
-		for (int x = 0; x < w; x++) {
-			for (int y = 0; y < h; y++) {
-				// normalization occurs here
-				normalizedHistogram[x][y] = (histogram[x][y] / (double) totalNumberOfHistogramEntries);
-			}
-		}
-		return normalizedHistogram;
 	}
 
 	// aka the L1 Norm
