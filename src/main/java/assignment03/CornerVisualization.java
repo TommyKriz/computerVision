@@ -1,9 +1,10 @@
 package assignment03;
 
-import java.awt.Color;
-import java.util.List;
 import ij.process.ImageProcessor;
 import imagingbook.pub.corners.Corner;
+
+import java.awt.Color;
+import java.util.List;
 
 public class CornerVisualization {
 

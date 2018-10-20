@@ -1,25 +1,7 @@
 package assignment03;
 
-import java.awt.Color;
-import java.awt.Shape;
-import java.awt.geom.Point2D;
-import java.awt.geom.QuadCurve2D;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import assignment03.CornerVisualization;
-import assignment03.StereoPictureCornerDetector;
-/*******************************************************************************
- * This software is provided as a supplement to the authors' textbooks on digital image processing
- * published by Springer-Verlag in various languages and editions. Permission to use and distribute
- * this software is granted under the BSD 2-Clause "Simplified" License (see
- * http://opensource.org/licenses/BSD-2-Clause). Copyright (c) 2006-2015 Wilhelm Burger, Mark J.
- * Burge. All rights reserved. Visit http://www.imagingbook.com for additional details.
- * 
- *******************************************************************************/
 import ij.IJ;
 import ij.ImagePlus;
-import ij.gui.GenericDialog;
 import ij.gui.Overlay;
 import ij.gui.ShapeRoi;
 import ij.plugin.filter.PlugInFilter;
@@ -27,14 +9,14 @@ import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
 import imagingbook.lib.color.RandomColorGenerator;
 import imagingbook.pub.corners.Corner;
-import imagingbook.pub.corners.HarrisCornerDetector;
 
-/**
- * This plugin implements the Harris corner detector. It calculates the corner
- * positions and shows the result in a new color image.
- * 
- * @version 2013/08/22
- */
+import java.awt.Color;
+import java.awt.Shape;
+import java.awt.geom.Point2D;
+import java.awt.geom.QuadCurve2D;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Assignment03 implements PlugInFilter {
 
 	private static final int MAX_ITERATIONS = 400;

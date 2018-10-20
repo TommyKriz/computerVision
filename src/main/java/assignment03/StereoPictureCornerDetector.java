@@ -1,13 +1,14 @@
 package assignment03;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import ij.IJ;
 import ij.gui.GenericDialog;
 import ij.process.ImageProcessor;
 import imagingbook.pub.corners.Corner;
 import imagingbook.pub.corners.HarrisCornerDetector;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class StereoPictureCornerDetector {
 
