@@ -1,16 +1,11 @@
 package assignment08;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.plugin.filter.PlugInFilter;
-import ij.process.ColorProcessor;
 import ij.process.FloatProcessor;
 import ij.process.ImageProcessor;
 
-import java.awt.Point;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Solution implements PlugInFilter {
 
@@ -41,6 +36,11 @@ public class Solution implements PlugInFilter {
 				ColorDistribution.distribution(allColors)).show();
 		new ImagePlus("Color Distribution",
 				ColorDistribution.distribution(referenceColors)).show();
+
+		ColorProbability colorProbability = new ColorProbability(
+				referenceColors);
+		new ImagePlus("Reference Color Probability", colorProbability.calc(ip))
+				.show();
 
 	}
 

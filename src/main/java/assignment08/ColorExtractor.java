@@ -32,19 +32,29 @@ public class ColorExtractor {
 		return colors;
 	}
 
-	// public static List<int[]>
-	// extractColorsCheckIfAlreadyContained(ImageProcessor ip, Point[] points) {
+	// public static List<int[]> extractColorsCheckIfAlreadyContained(
+	// ImageProcessor ip, Point[] points) {
 	// int[] rgb = new int[3];
 	// List<int[]> colors = new ArrayList<>();
 	// for (Point p : points) {
 	// ip.getPixel(p.x, p.y, rgb);
 	// if (!containsColor(colors, rgb)) {
 	// colors.add(rgb.clone());
-	// // IJ.log("--> Added color [" + rgb[0] + "," + rgb[1] + ","
-	// // + rgb[2] + "]");
-	// // } else {
-	// // IJ.log("Already Know color [" + rgb[0] + "," + rgb[1] + ","
-	// // + rgb[2] + "]");
+	// }
+	// }
+	// return colors;
+	// }
+	//
+	// public static List<int[]> extractColorsCheckIfAlreadyContained(
+	// ImageProcessor ip) {
+	// int[] rgb = new int[3];
+	// List<int[]> colors = new ArrayList<>();
+	// for (int x = 0; x < ip.getWidth(); x++) {
+	// for (int y = 0; y < ip.getHeight(); y++) {
+	// ip.getPixel(x, y, rgb);
+	// if (!containsColor(colors, rgb)) {
+	// colors.add(rgb.clone());
+	// }
 	// }
 	// }
 	// return colors;
