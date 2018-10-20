@@ -1,7 +1,6 @@
 package assignment04;
 
 import ij.IJ;
-import ij.ImagePlus;
 import ij.process.ColorProcessor;
 import imagingbook.lib.color.RandomColorGenerator;
 import imagingbook.pub.regions.Contour;
@@ -32,7 +31,6 @@ public class CPDH_Graphic {
 		initMaxRAndMainAxis(c, centroid);
 		fillHistogramAndDrawPointsPerSegment(cp, associatePolarCoordinates(c, centroid));
 		drawPolarGrid(cp, centroid);
-		new ImagePlus("CPDH", cp).show();
 	}
 
 	private void fillHistogramAndDrawPointsPerSegment(ColorProcessor cp, List<PolarPoint> polarPoints) {
@@ -90,12 +88,6 @@ public class CPDH_Graphic {
 			}
 		}
 		mainAxis = angleFromXAxis(mostDistantPoint, centroid);
-		
-		// TODO:
-//		majorAxis = PointSetMath.getMajorAxis(outerContour.getPointArray());
-//		IJ.log("Major Axis: " + majorAxis + " in deg: "
-//				+ Math.toDegrees(majorAxis));
-		
 		rMax = maxDistance;
 	}
 
