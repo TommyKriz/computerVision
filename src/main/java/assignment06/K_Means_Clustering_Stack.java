@@ -40,11 +40,6 @@ public class K_Means_Clustering_Stack {
 
 	public void start(ColorProcessor cp) {
 
-		// ImagePlus animatedKMeansClustering = new ImagePlus(
-		// "K Means Clustering", cp);
-		//
-		// animatedKMeansClustering.show();
-
 		ImageStack stack = new ImageStack(cp.getWidth(), cp.getHeight());
 
 		stack.addSlice(cp);
@@ -54,24 +49,21 @@ public class K_Means_Clustering_Stack {
 		animatedKMeansClustering.show();
 
 		double bestResult = Double.MAX_VALUE;
+		double error = bestResult;
 
 		for (int i = 0; i < MAX_ITERATIONS; i++) {
 
-			double oldError = Double.MAX_VALUE;
-			double error = 0;
-			while (error < oldError) {
+			while (error >= bestResult) {
+				// TODO: max iterations here ?
 				assignFeaturePointsToClusterCenter();
 				recalculateClusterCenters();
 				error = calculateTotalIntraClusterScatter();
-				oldError = error;
 			}
+			bestResult = error;
 
-			if (error < bestResult) {
-				stack.addSlice(drawClusters(cp.convertToColorProcessor()));
-			}
+			stack.addSlice(drawClusters(cp.convertToColorProcessor()));
 
-			// IJ.log("Iteration #" + i + "   Intra-Cluster Scatter: "
-			// + totalIntraClusterScatter);
+			IJ.log("Iteration #" + i + "   Intra-Cluster Scatter: " + error);
 
 			initClustersRandom(featureVector.length, featureVector[0].length);
 		}
