@@ -10,6 +10,8 @@ import ij.process.ImageProcessor;
 
 public class Assignment06 implements PlugInFilter {
 
+	private static int K = 2;
+
 	@Override
 	public int setup(String arg, ImagePlus imp) {
 		// TODO Auto-generated method stub
@@ -44,12 +46,10 @@ public class Assignment06 implements PlugInFilter {
 		}
 
 		K_Means_Clustering_Stack kMeansClustering = new K_Means_Clustering_Stack(
-				featureVector, 16);
+				featureVector, K);
 		kMeansClustering.start(ip.convertToColorProcessor());
 
 	}
-
-	private static int K = 2; // width of the new image
 
 	private void getUserInput() {
 		GenericDialog gd = new GenericDialog(
