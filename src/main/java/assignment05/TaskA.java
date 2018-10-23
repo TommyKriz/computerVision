@@ -25,7 +25,6 @@ import assignment04.CPDH_Graphic;
  */
 public class TaskA implements PlugInFilter {
 
-	// TODO: 0.46 manhattan
 	private static final double ERROR_THRESHOLD = 0.7;
 
 	private final static Color SHARK_COLOR = Color.CYAN;
@@ -78,14 +77,20 @@ public class TaskA implements PlugInFilter {
 				// by default use Color.WHITE
 				int colorIdx = 5;
 				double errorTmp = ERROR_THRESHOLD;
+
+				IJ.log("--------------");
+				IJ.log("Checking 5 Histograms");
+				IJ.log("#####################");
 				for (int i = 0; i < 5; i++) {
-					double error = getEuclideanDistance(h,
+					double error = getEuclideanDistanceRegardMirroring(h,
 							referenceNormalizedHistograms.get(i));
 					if (error < errorTmp) {
 						errorTmp = error;
+						IJ.log("MATCH DETECTED");
 						colorIdx = i;
 					}
 				}
+				IJ.log("--------------");
 				visualizeRegion(cp, R, referenceColors.get(colorIdx));
 			}
 		}
@@ -165,16 +170,34 @@ public class TaskA implements PlugInFilter {
 	}
 
 	// aka the L2 Norm
-	private double getEuclideanDistance(double[][] h1, double[][] h2) {
+	private double getEuclideanDistanceRegardMirroring(double[][] h1,
+			double[][] referenceHistogram) {
 		int w = h1.length;
 		int h = h1[0].length;
+
 		double sum = 0;
 		for (int x = 0; x < w; x++) {
 			for (int y = 0; y < h; y++) {
-				sum += Math.sqrt(Math.pow(h1[x][y] - h2[x][y], 2.0));
+				sum += Math.sqrt(Math.pow(h1[x][y] - referenceHistogram[x][y],
+						2.0));
 			}
 		}
-		return sum;
+
+		double sumMirrored = 0;
+		for (int x = 0; x < w; x++) {
+			for (int y = 0; y < h; y++) {
+				sumMirrored += Math.sqrt(Math.pow(h1[x][y]
+						- referenceHistogram[x][h - y % h - 1], 2.0));
+			}
+		}
+
+		IJ.log("sum: " + sum + "  sumMirrored: " + sumMirrored);
+
+		if (sumMirrored < sum) {
+			return sumMirrored;
+		} else {
+			return sum;
+		}
 	}
 
 }
