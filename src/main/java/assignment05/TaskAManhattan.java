@@ -175,16 +175,31 @@ public class TaskAManhattan implements PlugInFilter {
 	}
 
 	// aka the L1 Norm
-	private double getManhattanDistance(double[][] h1, double[][] h2) {
+	private double getManhattanDistance(double[][] h1,
+			double[][] referenceHistogram) {
 		int w = h1.length;
 		int h = h1[0].length;
 		double sum = 0;
 		for (int x = 0; x < w; x++) {
 			for (int y = 0; y < h; y++) {
-				sum += Math.abs(h1[x][y] - h2[x][y]);
+				sum += Math.abs(h1[x][y] - referenceHistogram[x][y]);
 			}
 		}
-		return sum;
-	}
 
+		double sumMirrored = 0;
+		for (int x = 0; x < w; x++) {
+			for (int y = 0; y < h; y++) {
+				sumMirrored += Math.abs(h1[x][y]
+						- referenceHistogram[x][h - y % h - 1]);
+			}
+		}
+
+		IJ.log("sum: " + sum + "  sumMirrored: " + sumMirrored);
+
+		if (sumMirrored < sum) {
+			return sumMirrored;
+		} else {
+			return sum;
+		}
+	}
 }
