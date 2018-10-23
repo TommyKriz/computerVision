@@ -16,7 +16,9 @@ public class K_Means_Clustering_Stack {
 
 	private int k;
 
-	private final static int MAX_ITERATIONS = 100;
+	private final static int MAX_ITERATIONS = 200;
+
+	private static final int MAX_FITTING_ITERATIONS = 30;
 
 	private float[][][] featureVector;
 
@@ -49,21 +51,27 @@ public class K_Means_Clustering_Stack {
 		animatedKMeansClustering.show();
 
 		double bestResult = Double.MAX_VALUE;
-		double error = bestResult;
+		double error = Double.MAX_VALUE;
 
 		for (int i = 0; i < MAX_ITERATIONS; i++) {
 
-			while (error >= bestResult) {
-				// TODO: max iterations here ?
+			int fittingIteration = 0;
+			while (error >= bestResult
+					&& fittingIteration < MAX_FITTING_ITERATIONS) {
 				assignFeaturePointsToClusterCenter();
 				recalculateClusterCenters();
 				error = calculateTotalIntraClusterScatter();
+				fittingIteration++;
 			}
-			bestResult = error;
 
-			stack.addSlice(drawClusters(cp.convertToColorProcessor()));
-
-			IJ.log("Iteration #" + i + "   Intra-Cluster Scatter: " + error);
+			if (error < bestResult) {
+				bestResult = error;
+				stack.addSlice(drawClusters(cp.convertToColorProcessor()));
+				IJ.log("Iteration #" + i + "   Intra-Cluster Scatter: " + error
+						+ "  -fittingIterations: " + fittingIteration);
+			} else {
+				IJ.log("bad iteration");
+			}
 
 			initClustersRandom(featureVector.length, featureVector[0].length);
 		}
