@@ -27,8 +27,9 @@ import java.util.List;
  */
 public class TaskB implements PlugIn {
 
-	static final String DataBaseFileName = IJ.getDirectory("temp")
-			+ "serializedData.ser";
+	// static final String DataBaseFileName = IJ.getDirectory("temp")
+	// + "serializedData.ser";
+	static final String DataBaseFileName = "target/db";
 
 	public void run(String arg0) {
 		String dir = IJ.getDirectory("Select start directory...");
@@ -43,7 +44,7 @@ public class TaskB implements PlugIn {
 		long starttime = System.currentTimeMillis();
 		int fileCount = 0;
 
-		HashMap<String, double[][]> histograms = new HashMap();
+		HashMap<String, double[][]> histograms = new HashMap<>();
 
 		for (String path : paths) {
 			fileCount++;
@@ -59,8 +60,6 @@ public class TaskB implements PlugIn {
 				continue;
 			}
 			ByteProcessor bp = (ByteProcessor) ip;
-
-			// TODO: perform region segmentation on bp
 
 			// create the region labeler / contour tracer:
 			RegionContourLabeling segmenter = new RegionContourLabeling(
