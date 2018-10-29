@@ -19,7 +19,7 @@ import assignment04.CPDH_Graphic;
 public class TaskC implements PlugInFilter {
 
 	private static final int TOP_MATCHES_TO_SHOW = 10;
-	static final String DataBaseFileName = "target/db";
+	static final String DataBaseFileName = "src/main/resources/db";
 
 	public void run(ImageProcessor ip) {
 

@@ -27,8 +27,6 @@ import java.util.List;
  */
 public class TaskB implements PlugIn {
 
-	// static final String DataBaseFileName = IJ.getDirectory("temp")
-	// + "serializedData.ser";
 	static final String DataBaseFileName = "target/db";
 
 	public void run(String arg0) {
